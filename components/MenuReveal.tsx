@@ -14,44 +14,44 @@ export default function MenuReveal() {
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
-    if (!wrapper) return;
+    const hero = document.getElementById("hero-section");
+    if (!wrapper || !hero) return;
 
-    gsap.set(wrapper, { y: "100vh" });
+    const vh = window.innerHeight;
+    const rootEm = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    // "Osez découvrir" center = 40vh, font clamp(3.75rem, 8vw, 6.5rem)
+    const fontPx = Math.min(Math.max(rootEm * 3.75, window.innerWidth * 0.08), rootEm * 6.5);
+    // "Osez découvrir": top-[40vh] -translate-y-1/2, font 2 lines leading-none
+    // Block top = 40vh - fontPx, block bottom = 40vh + fontPx
+    // Subtract Menu's pt-6 (1.5rem) so "Notre Menu" h2 lands right at oseBottom
+    const oseBottom = vh * 0.4 + fontPx - rootEm * 1.5;
 
-    const tween = gsap.to(wrapper, {
-      y: 0,
-      ease: "none",
-      scrollTrigger: {
-        trigger: wrapper,
-        start: "top bottom",
-        end: "top top",
-        scrub: true,
-      },
-    });
+    // Rise from bottom of viewport to just below "Osez découvrir"
+    // Exactly in sync with the frozen period: 710vh → 910vh
+    const tween = gsap.fromTo(wrapper,
+      { y: vh },
+      {
+        y: oseBottom,
+        ease: "none",
+        scrollTrigger: {
+          trigger: hero,
+          start: () => `top+=${vh * 560 / 100} top`,  // 560vh — V2 starts
+          end:   () => `top+=${vh * 710 / 100} top`,  // 710vh — V2 ends = menu in place
+          scrub: 1,
+        },
+      }
+    );
 
-    return () => {
-      tween.kill();
-    };
+    return () => { tween.kill(); };
   }, []);
 
   return (
-    <div
-      ref={wrapperRef}
-      className="relative z-30 -mt-[100vh]"
-    >
-      <div className="pointer-events-auto">
-        {/* "Osez découvrir" — monte avec MenuReveal, s'aligne avec "Notre Menu" */}
-        <div className="px-6 md:px-10 pt-24 md:pt-36 pb-0">
-          <div className="max-w-7xl mx-auto">
-            <p className="italic font-heading text-[clamp(3rem,8vw,7rem)] leading-none text-white/90">
-              Osez <span className="text-accent">découvrir</span>
-            </p>
-          </div>
-        </div>
-        <Menu />
-        <About />
-        <Footer />
-      </div>
+    // z-30 above Hero canvas (z-20), -mt-[100vh] to overlap
+    // bg-black on inner content so pizza doesn't bleed through text
+    <div ref={wrapperRef} className="relative z-30 -mt-[100vh]">
+      <Menu />
+      <About />
+      <Footer />
     </div>
   );
 }

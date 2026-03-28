@@ -301,12 +301,11 @@ export default function Menu() {
   const sections = MENU[activeCategory];
 
   return (
-    <section id="menu" className="pb-24 md:pb-36 px-6 md:px-10 pt-4">
+    <section id="menu" className="pb-24 md:pb-36 px-6 md:px-10 pt-6">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <div ref={titleRef} className="mb-12">
-          <p className="font-body text-accent text-xs tracking-[0.4em] uppercase mb-4">La carte</p>
           <h2 className="italic font-heading text-[clamp(3rem,8vw,7rem)] leading-none text-white">Notre Menu</h2>
           <div className="mt-4 w-16 h-px bg-accent" />
         </div>
