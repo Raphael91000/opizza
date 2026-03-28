@@ -301,14 +301,20 @@ export default function Menu() {
   const sections = MENU[activeCategory];
 
   return (
-    <section id="menu" className="pb-24 md:pb-36 px-6 md:px-10 pt-6">
-      <div className="max-w-7xl mx-auto">
+    <section id="menu" className="pt-6 relative">
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
 
         {/* Header */}
         <div ref={titleRef} className="mb-12">
           <h2 className="italic font-heading text-[clamp(3rem,8vw,7rem)] leading-none text-white">Notre Menu</h2>
           <div className="mt-4 w-16 h-px bg-accent" />
         </div>
+
+      </div>
+
+        {/* Black band starting from tabs — full screen width */}
+        <div className="w-full bg-black pt-8 pb-24 md:pb-36 px-6 md:px-10">
+        <div className="max-w-7xl mx-auto">
 
         {/* Category tabs */}
         <div className="flex flex-wrap gap-2 mb-12 border-b border-white/8 pb-6">
@@ -380,7 +386,8 @@ export default function Menu() {
             </p>
           )}
         </div>
-      </div>
+        </div>{/* end max-w */}
+        </div>{/* end black band */}
     </section>
   );
 }

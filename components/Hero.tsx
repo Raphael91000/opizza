@@ -30,7 +30,6 @@ export default function Hero() {
   const word2Ref   = useRef<HTMLSpanElement>(null);
   const word3Ref   = useRef<HTMLSpanElement>(null);
   const ctaRef     = useRef<HTMLDivElement>(null);
-  const hintRef    = useRef<HTMLDivElement>(null);
   const oseRef     = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,7 +39,10 @@ export default function Hero() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    const resize = () => {
+      canvas.width  = window.innerWidth  || document.documentElement.clientWidth;
+      canvas.height = window.innerHeight || document.documentElement.clientHeight;
+    };
     resize();
 
     const f1: HTMLImageElement[] = Array.from({ length: FRAME_COUNT_1 }, (_, i) => {
@@ -57,7 +59,7 @@ export default function Hero() {
       const tw = canvas!.width * 0.62, th = canvas!.height;
       const sc = Math.max(tw / img.naturalWidth, th / img.naturalHeight);
       const dw = img.naturalWidth * sc, dh = img.naturalHeight * sc;
-      ctx!.drawImage(img, canvas!.width * 0.63 - dw / 2, (canvas!.height - dh) / 2, dw, dh);
+      ctx!.drawImage(img, canvas!.width * 0.67 - dw / 2, (canvas!.height - dh) / 2, dw, dh);
     }
 
     function render() {
@@ -70,7 +72,9 @@ export default function Hero() {
       ctx.globalAlpha = 1;
     }
 
+    // Force first render whether image is cached or not
     f1[0].onload = () => render();
+    if (f1[0].complete && f1[0].naturalWidth > 0) render();
 
     const vh = window.innerHeight;
     const at = (vhVal: number) => () => `top+=${vh * vhVal / 100} top`;
@@ -78,6 +82,9 @@ export default function Hero() {
     const tw1 = gsap.to(state, { v1: FRAME_COUNT_1 - 1, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: "top top", end: at(V1_END), scrub: 1 }, onUpdate: render });
     const twX = gsap.to(state, { xfade: 1, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(XFADE_S), end: at(XFADE_E), scrub: 1 }, onUpdate: render });
     const tw2 = gsap.to(state, { v2: FRAME_COUNT_2 - 1, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(V2_START), end: at(V2_END), scrub: 1 }, onUpdate: render });
+
+    // Ensure frame 0 renders once everything is set up
+    requestAnimationFrame(render);
 
     // "Osez découvrir" appears after phrase2
     gsap.set(oseRef.current, { autoAlpha: 0, x: -60 });
@@ -88,7 +95,7 @@ export default function Hero() {
 
     // Entrance
     gsap.set([word1Ref.current, word2Ref.current, word3Ref.current, ctaRef.current], { autoAlpha: 0, y: 35 });
-    gsap.set([hintRef.current, phrase2Ref.current], { autoAlpha: 0, y: 40 });
+    gsap.set(phrase2Ref.current, { autoAlpha: 0, y: 40 });
 
     const enterTl = gsap.timeline({ delay: 0.3 });
     enterTl
@@ -96,16 +103,15 @@ export default function Hero() {
       .to(word2Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
       .to(word3Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
       .to(ctaRef.current,   { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.2")
-      .to(hintRef.current,  { autoAlpha: 1,        duration: 0.6, ease: "power2.out" }, "-=0.2");
 
-    const p1Exit  = gsap.to(phrase1Ref.current, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48),  end: at(108), scrub: true } });
-    const p2Enter = gsap.to(phrase2Ref.current, { autoAlpha: 1, y: 0,   ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(84),  end: at(156), scrub: true } });
-    const p2Exit  = gsap.to([phrase2Ref.current, ctaRef.current], { autoAlpha: 0, y: -30, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(540), end: at(630), scrub: true } });
+    const p1Exit  = gsap.fromTo(phrase1Ref.current, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48),  end: at(108), scrub: true } });
+    const p2Enter = gsap.fromTo(phrase2Ref.current, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0,   ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(84),  end: at(156), scrub: true } });
+    const p2Exit  = gsap.fromTo([phrase2Ref.current, ctaRef.current], { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -30, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(540), end: at(630), scrub: true } });
 
     const handleResize = () => { resize(); render(); };
     window.addEventListener("resize", handleResize);
     return () => {
-      [tw1, twX, tw2, twOse, p1Exit, p2Enter, p2Exit, enterTl].forEach(t => t.kill());
+      [tw1, twX, tw2, twOse, p1Exit, p2Enter, p2Exit, enterTl].forEach(t => t?.kill());
       window.removeEventListener("resize", handleResize);
     };
   }, []);
@@ -119,37 +125,40 @@ export default function Hero() {
 
         <div className="absolute pt-36 px-10 md:px-20 left-0 right-0 top-0">
           <div className="relative h-[calc(3*clamp(3rem,7vw,6rem)*1.25)]">
-            <div ref={phrase1Ref} className="absolute inset-0 pointer-events-none">
-              <p className="italic font-heading text-[clamp(3rem,7vw,6rem)] text-white/90 leading-tight max-w-sm">
-                <span ref={word1Ref} className="block">Croustillante</span>
-                <span ref={word2Ref} className="block text-accent">généreuse</span>
-                <span ref={word3Ref} className="block">fondante</span>
+            <div ref={phrase1Ref} className="absolute inset-0 pointer-events-none flex items-center">
+              <p className="italic font-heading leading-none text-white/90">
+                <span ref={word1Ref} className="block text-[clamp(3rem,5.5vw,5rem)] opacity-0">Chaude</span>
+                <span ref={word2Ref} className="block text-accent text-[clamp(3.9rem,7.15vw,6.5rem)] opacity-0">généreuse</span>
+                <span ref={word3Ref} className="block text-[clamp(3rem,8vw,7rem)] opacity-0">fondante</span>
               </p>
             </div>
-            <div ref={phrase2Ref} className="absolute inset-0 pointer-events-none">
-              <p className="italic font-heading text-[clamp(3rem,7vw,6rem)] text-white/90 leading-tight max-w-sm">
-                Directement<br /><span className="text-accent">livré</span> chez toi.
+            <div ref={phrase2Ref} className="absolute inset-0 pointer-events-none opacity-0 invisible flex items-center">
+              <p className="italic font-heading leading-none text-white/90">
+                <span className="block text-[clamp(3rem,5.5vw,5rem)]">Directement</span>
+                <span className="block text-accent text-[clamp(3.9rem,7.15vw,6.5rem)]">livré</span>
+                <span className="block text-[clamp(3rem,8vw,7rem)]">chez toi.</span>
               </p>
             </div>
           </div>
-          <div ref={ctaRef} className="mt-[clamp(0.75rem,1.75vw,1.5rem)]">
+          <div ref={ctaRef} className="mt-4 flex flex-col gap-3 opacity-0 invisible">
             <a href="tel:+33983518714" className="inline-flex items-center gap-3 bg-accent text-black font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-fit rounded-full transition-all duration-300 hover:bg-yellow-300">
               <PhoneIcon /><span>Commander maintenant</span>
+            </a>
+            <a href="#menu" className="inline-flex items-center gap-3 border border-white/20 text-white/70 font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-fit rounded-full transition-all duration-300 hover:border-white/50 hover:text-white">
+              <span>Découvrir notre menu</span>
             </a>
           </div>
         </div>
 
         {/* "Osez découvrir" — pinned, waits for "Notre Menu" */}
-        <div ref={oseRef} className="absolute top-[40vh] -translate-y-1/2 left-0 px-10 md:px-20 pointer-events-none">
-          <p className="italic font-heading text-[clamp(3.75rem,8vw,6.5rem)] leading-none text-white/90">
-            Osez<br /><span className="text-accent">découvrir</span>
+        <div ref={oseRef} className="absolute top-[40vh] -translate-y-1/2 left-0 px-10 md:px-20 pointer-events-none opacity-0 invisible">
+          <p className="italic font-heading text-[clamp(3rem,5.5vw,5rem)] leading-none text-white/90">
+            Osez<br /><span className="text-accent text-[1.3em]">découvrir</span>
           </p>
         </div>
 
-        <div ref={hintRef} className="absolute bottom-8 left-10 md:left-20 flex items-center gap-3 pointer-events-none">
-          <div className="w-px h-8 bg-white/20" />
-          <span className="font-body text-white/25 text-[10px] tracking-[0.3em] uppercase">Scroll</span>
-        </div>
+        {/* Cover KlingAI watermark on frames */}
+        <div className="absolute bottom-0 right-0 w-40 h-14 bg-black pointer-events-none" />
       </div>
     </section>
   );

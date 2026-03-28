@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Inter } from "next/font/google";
+import { Anton, Inter } from "next/font/google";
 import "./globals.css";
 
-const bebasNeue = Bebas_Neue({
+const anton = Anton({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-bebas-neue",
+  variable: "--font-anton",
   display: "swap",
 });
 
@@ -28,9 +28,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${bebasNeue.variable} ${inter.variable}`}>
+    <html lang="fr" className={`${anton.variable} ${inter.variable}`}>
       <body className="bg-black text-white min-h-screen">
-{children}
+        {/* SVG filter for grunge/distressed text effect on headings */}
+        <svg width="0" height="0" className="absolute">
+          <defs>
+            <filter id="grunge" x="-5%" y="-5%" width="110%" height="110%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.055" numOctaves="4" seed="8" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+              <feComposite in="displaced" in2="SourceGraphic" operator="in" />
+            </filter>
+          </defs>
+        </svg>
+        {children}
       </body>
     </html>
   );

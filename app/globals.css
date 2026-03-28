@@ -5,8 +5,13 @@
 }
 
 @theme inline {
-  --font-heading: var(--font-bebas-neue), "Bebas Neue", sans-serif;
+  --font-heading: var(--font-anton), "Anton", sans-serif;
   --font-body: var(--font-inter), "Inter", sans-serif;
+}
+
+.font-heading {
+  text-transform: uppercase;
+  filter: url(#grunge);
 }
 
 body {
