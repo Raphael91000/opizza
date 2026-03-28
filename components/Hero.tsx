@@ -100,7 +100,7 @@ export default function Hero() {
 
     const p1Exit  = gsap.to(phrase1Ref.current, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48),  end: at(108), scrub: true } });
     const p2Enter = gsap.to(phrase2Ref.current, { autoAlpha: 1, y: 0,   ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(84),  end: at(156), scrub: true } });
-    const p2Exit  = gsap.to([phrase2Ref.current, ctaRef.current], { autoAlpha: 0, y: -30, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(480), end: at(560), scrub: true } });
+    const p2Exit  = gsap.to([phrase2Ref.current, ctaRef.current], { autoAlpha: 0, y: -30, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(540), end: at(630), scrub: true } });
 
     const handleResize = () => { resize(); render(); };
     window.addEventListener("resize", handleResize);
