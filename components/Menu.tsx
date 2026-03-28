@@ -265,6 +265,7 @@ const MENU: Record<Category, Section[]> = {
 
 export default function Menu() {
   const [activeCategory, setActiveCategory] = useState<Category>("Pizzas");
+  const [activePizzaSection, setActivePizzaSection] = useState(0);
   const titleRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -287,18 +288,29 @@ export default function Menu() {
   const switchCategory = (cat: Category) => {
     if (!contentRef.current) return;
     gsap.to(contentRef.current, {
-      opacity: 0,
-      y: 10,
-      duration: 0.18,
-      ease: "power2.in",
+      opacity: 0, y: 10, duration: 0.18, ease: "power2.in",
       onComplete: () => {
         setActiveCategory(cat);
+        setActivePizzaSection(0);
         gsap.to(contentRef.current, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" });
       },
     });
   };
 
-  const sections = MENU[activeCategory];
+  const switchPizzaSection = (idx: number) => {
+    if (!contentRef.current) return;
+    gsap.to(contentRef.current, {
+      opacity: 0, y: 10, duration: 0.18, ease: "power2.in",
+      onComplete: () => {
+        setActivePizzaSection(idx);
+        gsap.to(contentRef.current, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" });
+      },
+    });
+  };
+
+  const sections = activeCategory === "Pizzas"
+    ? [MENU.Pizzas[activePizzaSection]]
+    : MENU[activeCategory];
 
   return (
     <section id="menu" className="pt-6 relative">
@@ -315,6 +327,7 @@ export default function Menu() {
         {/* Black band starting from tabs — full screen width */}
         <div className="w-full bg-black pt-8 pb-24 md:pb-36 px-6 md:px-10">
         <div className="max-w-7xl mx-auto">
+
 
         {/* Category tabs */}
         <div className="flex flex-wrap gap-2 mb-12 border-b border-white/8 pb-6">
@@ -339,7 +352,25 @@ export default function Menu() {
             <div key={section.title}>
               {/* Section title */}
               <div className="mb-6">
-                <h3 className="font-heading text-3xl md:text-4xl text-white">{section.title}</h3>
+                {activeCategory === "Pizzas" ? (
+                  <div className="flex flex-wrap items-baseline gap-6">
+                    {MENU.Pizzas.map((s, idx) => (
+                      <button
+                        key={s.title}
+                        onClick={() => switchPizzaSection(idx)}
+                        className={`font-heading text-3xl md:text-4xl transition-colors duration-200 pb-1 border-b-2 ${
+                          activePizzaSection === idx
+                            ? "text-accent border-accent"
+                            : "text-white/70 border-transparent hover:text-white"
+                        }`}
+                      >
+                        {s.title}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <h3 className="font-heading text-3xl md:text-4xl text-white">{section.title}</h3>
+                )}
                 {section.subtitle && (
                   <p className="font-body text-accent/70 text-xs tracking-wider mt-1">{section.subtitle}</p>
                 )}

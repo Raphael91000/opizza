@@ -62,85 +62,62 @@ export default function About() {
   }, []);
 
   const textLines = [
-    "O'Pizza est né dans les rues de Saint-Michel-sur-Orge,",
-    "là où la nuit est longue et les envies sont intenses.",
-    "Chaque pizza est façonnée à la main — pâte fermentée",
-    "72 heures, ingrédients sélectionnés, garnitures généreuses.",
-    "Ni chic, ni vulgaire : juste du goût brut, servi avec exigence.",
+    "La Maison O'Pizza c'est plus qu'un resto. C'est une adresse qui s'est forgé une réputation sur la qualité, la générosité et le respect du client.",
+    "Ici on prend le temps de bien faire. Des ingrédients frais sélectionnés, des recettes travaillées, des portions qui respectent ta faim.",
+    "On propose pas que des pizzas — notre carte est pensée pour satisfaire tout le monde, à chaque moment de la journée. Que tu commandes depuis ton canapé ou que tu passes nous voir, l'expérience est la même : du bon, du vrai, du généreux.",
+    "On est fiers de ce qu'on fait. Et ça se sent dans chaque assiette.",
   ];
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      className="py-24 md:py-36 px-6 md:px-10 relative overflow-hidden"
+      className="pt-16 pb-16 px-6 md:px-10 bg-accent"
     >
-      {/* Background accent */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-2/3 bg-accent/10 pointer-events-none" />
-      <div className="absolute right-8 top-1/2 -translate-y-1/2 w-px h-1/2 bg-accent/5 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center">
-        {/* Left — large number */}
-        <div className="relative">
+      <div className="max-w-7xl mx-auto">
+        {/* Title */}
+        <div className="relative mb-12">
           <p
             ref={labelRef}
-            className="font-body text-accent text-xs tracking-[0.4em] uppercase mb-6"
+            className="font-body text-black text-xs tracking-[0.4em] uppercase mb-3"
           >
             Notre histoire
           </p>
 
-          <div
-            ref={decorRef}
-            className="w-20 h-px bg-accent mb-10"
-          />
+          <h2 className="italic font-heading text-[clamp(2.5rem,6vw,5rem)] leading-none text-black relative z-10 mb-6">
+            LA MAISON,<br />C'EST ICI.
+          </h2>
+
+          <div ref={decorRef} className="w-20 h-px bg-black" />
 
           <div
-            className="font-heading text-[clamp(6rem,18vw,16rem)] leading-none text-white/[0.03] select-none pointer-events-none absolute -top-4 -left-4"
+            className="font-heading text-[clamp(6rem,18vw,16rem)] leading-none text-black/[0.06] select-none pointer-events-none absolute -top-4 -left-4"
             aria-hidden
           >
             01
           </div>
-
-          <h2 className="italic font-heading text-[clamp(3rem,8vw,6rem)] leading-none text-white relative z-10">
-            La rue
-            <br />
-            <span className="text-accent">a du goût.</span>
-          </h2>
         </div>
 
-        {/* Right — story */}
-        <div>
-          <div className="space-y-1">
-            {textLines.map((line, i) => (
-              <div
-                key={i}
-                ref={(el) => {
-                  if (el) linesRef.current[i] = el;
-                }}
-                className="overflow-hidden"
-              >
-                <p className="font-body text-white/65 text-base md:text-lg leading-[1.9]">
-                  {line}
-                </p>
-              </div>
-            ))}
-          </div>
+        {/* Body text — full width */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          {textLines.map((line, i) => (
+            <div
+              key={i}
+              ref={(el) => { if (el) linesRef.current[i] = el; }}
+            >
+              <p className="font-body text-black text-base md:text-lg leading-[1.9]">
+                {line}
+              </p>
+            </div>
+          ))}
+        </div>
 
-          {/* Stats */}
-          <div className="mt-14 grid grid-cols-3 gap-6">
-            {[
-              { value: "72H", label: "Fermentation" },
-              { value: "100%", label: "Fait maison" },
-              { value: "6J/7", label: "Ouvert" },
-            ].map((stat) => (
-              <div key={stat.label} className="border-t border-white/10 pt-4">
-                <p className="font-heading text-3xl text-accent">{stat.value}</p>
-                <p className="font-body text-white/40 text-xs tracking-wider uppercase mt-1">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
+        {/* Closing line — full width */}
+        <div className="border-t border-black/20 pt-8">
+          <p className="font-heading text-[clamp(1.2rem,2.5vw,2rem)] leading-tight text-black">
+            UNE SEULE ADRESSE. UN SEUL STANDARD : L'EXCELLENCE.
+          </p>
         </div>
       </div>
     </section>
