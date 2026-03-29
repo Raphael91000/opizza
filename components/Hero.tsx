@@ -105,18 +105,21 @@ export default function Hero() {
     gsap.set(livRef.current, { autoAlpha: 0, y: 20 });
 
     // Entrance
-    // Only run entrance animation if page loaded at top (not mid-scroll)
-    const scrolledPastPromo = window.scrollY > vh * 0.48;
-    const enterTl = gsap.timeline({ delay: 0.3 });
-    enterTl
-      .to(labelRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" })
-      .to(word1Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.2")
-      .to(word2Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
-      .to(word3Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
-      .to(ctaRef.current,   { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.2");
-    if (!scrolledPastPromo) {
-      enterTl.to(promoRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.1");
-      enterTl.to(promoMobRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.5");
+    const loadedAtTop = window.scrollY < 10;
+    const enterTl = gsap.timeline({ delay: loadedAtTop ? 0.3 : 0 });
+    if (loadedAtTop) {
+      // Animate in normally
+      enterTl
+        .to(labelRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" })
+        .to(word1Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.2")
+        .to(word2Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
+        .to(word3Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
+        .to(ctaRef.current,   { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.2")
+        .to(promoRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.1")
+        .to(promoMobRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.5");
+    } else {
+      // Reloaded mid-scroll: set entrance end-state immediately so ScrollTrigger can override correctly
+      gsap.set([word1Ref.current, word2Ref.current, word3Ref.current, ctaRef.current, labelRef.current, promoRef.current, promoMobRef.current], { autoAlpha: 1, y: 0 });
     }
 
     // Scroll hint: appear after entrance, disappear on first scroll
@@ -134,6 +137,9 @@ export default function Hero() {
     const p2Enter = gsap.fromTo(phrase2Ref.current, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0,   ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(84),  end: at(156), scrub: true } });
     const livEnter = gsap.fromTo(livRef.current, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(120), end: at(180), scrub: true } });
     const p2Exit  = gsap.fromTo([phrase2Ref.current, ctaRef.current, livRef.current], { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -30, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(540), end: at(630), scrub: true } });
+
+    // Recalculate all scroll positions for current scroll on reload
+    ScrollTrigger.refresh();
 
     const handleResize = () => { resize(); render(); };
     window.addEventListener("resize", handleResize);
