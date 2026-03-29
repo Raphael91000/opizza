@@ -47,9 +47,11 @@ html {
 
 /* Hero dots — left side decoration */
 .hero-dots {
+  will-change: opacity;
+  transform: translateZ(0);
   background-image:
-    radial-gradient(circle, rgba(255,255,255,0.32) 1.5px, transparent 1.5px),
-    radial-gradient(circle, rgba(255,255,255,0.18) 1.5px, transparent 1.5px);
+    radial-gradient(circle, rgba(255,255,255,0.48) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,0.28) 1.5px, transparent 1.5px);
   background-size: 22px 22px, 37px 37px;
   background-position: 0 0, 11px 11px;
   -webkit-mask-image: linear-gradient(to right, black 0%, black 25%, transparent 55%);
@@ -73,5 +75,6 @@ html {
 
 .scroll-line-anim {
   animation: scrollLine 1.8s ease-in-out infinite;
+  will-change: transform;
 }
 

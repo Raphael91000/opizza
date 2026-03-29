@@ -25,31 +25,20 @@ export default function MenuReveal() {
     const fontPx = Math.min(Math.max(rootEm * 3, window.innerWidth * 0.055), rootEm * 5);
 
     // Hero: h-[950vh] → wrapper doc pos = (950-100)*vh/100 = 850*vh/100
-    // Phase 1 ends at at(800): wrapper viewport pos = (850-800)*vh/100 = vh/2
-    // For "Notre Menu" h2 to land at "Osez découvrir" bottom:
-    //   rendered = wrapper_pos + y = vh/2 + y = vh*0.4 + fontPx*1.15 - rootEm*1.5
-    //   → y = fontPx*1.15 - vh*0.1 - rootEm*1.5
-    const oseBottom = fontPx * 1.15 - vh * 0.1 - rootEm * 1.5;
-
-    // Phase 2 (frozen): wrapper moves up by vh/2 (from at(800) to at(850))
-    // Compensate with +vh/2 on y so menu stays at same screen position
-    const oseFrozen = oseBottom + vh * 0.5;
-
-    // Single timeline: phase1 = menu rises (630→800vh), phase2 = frozen (800→850vh)
-    const total = 850 - 630; // 220vh
-    const p1 = (800 - 630) / total; // 170/220
-    const p2 = (850 - 800) / total; //  50/220
+    // Animation ends at at(850) = exactly when sticky releases → no frozen stop
+    // At at(850): wrapper viewport pos = 0, so oseBottom = target rendered pos
+    // "Notre Menu" h2 at "Osez découvrir" bottom = vh*0.4 + fontPx*1.15 - pt6
+    const oseBottom = vh * 0.4 + fontPx * 1.15 - rootEm * 1.5;
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: hero,
-        start: () => `top+=${vh * 630 / 100} top`,
-        end:   () => `top+=${vh * 850 / 100} top`,
+        start: () => `top+=${vh * 720 / 100} top`,  // 720vh — earlier start, faster arrival
+        end:   () => `top+=${vh * 850 / 100} top`,  // 850vh — sticky releases, scroll resumes
         scrub: true,
       },
     });
-    tl.fromTo(wrapper, { y: vh },       { y: oseBottom, ease: "none", duration: p1 })
-      .fromTo(wrapper, { y: oseBottom }, { y: oseFrozen, ease: "none", duration: p2 });
+    tl.fromTo(wrapper, { y: vh }, { y: oseBottom, ease: "none" });
 
     return () => { tl.kill(); };
   }, []);
@@ -57,7 +46,7 @@ export default function MenuReveal() {
   return (
     // z-30 above Hero canvas (z-20), -mt-[100vh] to overlap
     // bg-black on inner content so pizza doesn't bleed through text
-    <div ref={wrapperRef} className="relative z-30 -mt-[100vh]">
+    <div ref={wrapperRef} className="relative z-30 -mt-[100vh]" style={{ willChange: "transform", transform: "translateZ(0)" }}>
       <Menu />
 
       {/* Torn edge: yellow bleeding into black Menu above */}
