@@ -46,7 +46,7 @@ export default function MenuReveal() {
   return (
     // z-30 above Hero canvas (z-20), -mt-[100vh] to overlap
     // bg-black on inner content so pizza doesn't bleed through text
-    <div ref={wrapperRef} className="relative z-30 -mt-[100vh]" style={{ willChange: "transform", transform: "translateZ(0)" }}>
+    <div ref={wrapperRef} className="relative z-30 -mt-[100vh]">
       <Menu />
 
       {/* Torn edge: yellow bleeding into black Menu above */}

@@ -152,7 +152,7 @@ export default function Hero() {
   return (
     <section ref={sectionRef} id="hero-section" className="relative h-[950vh] z-20">
       <div className="sticky top-0 h-screen">
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ willChange: "contents", transform: "translateZ(0)" }} />
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
         {/* Left vignette — anchors text area, separates it from canvas */}
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-black/60 via-black/20 to-transparent" />

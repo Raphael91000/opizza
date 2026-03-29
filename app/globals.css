@@ -47,8 +47,6 @@ html {
 
 /* Hero dots — left side decoration */
 .hero-dots {
-  will-change: opacity;
-  transform: translateZ(0);
   background-image:
     radial-gradient(circle, rgba(255,255,255,0.48) 1.5px, transparent 1.5px),
     radial-gradient(circle, rgba(255,255,255,0.28) 1.5px, transparent 1.5px);
