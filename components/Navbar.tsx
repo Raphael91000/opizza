@@ -34,7 +34,7 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
+      <div className="px-10 md:px-20 h-16 md:h-20 flex items-center justify-between">
         {/* Links — desktop gauche */}
         <div className="hidden md:flex items-center gap-8 font-body text-xs tracking-[0.2em] uppercase text-white/60">
           <a href="#menu" className="hover:text-white transition-colors duration-200">Menu</a>

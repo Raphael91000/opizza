@@ -83,11 +83,8 @@ export default function Footer() {
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 py-16 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-12 items-start">
 
         {/* Logo */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:items-end md:pr-32">
           <Image src="/logo.png" alt="O'Pizza" width={160} height={70} className="w-36 h-auto" />
-          <p className="font-body text-white/30 text-xs leading-relaxed max-w-[200px]">
-            Street food de luxe.<br />Sans compromis.
-          </p>
         </div>
 
         {/* Address + phone */}

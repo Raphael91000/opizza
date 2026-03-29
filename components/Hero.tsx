@@ -155,7 +155,6 @@ export default function Hero() {
             ref={labelRef}
             className="inline-flex items-center gap-2 mb-5 opacity-0 invisible"
           >
-            <span className="w-5 h-px bg-accent" />
             <p className="font-body text-[11px] tracking-[0.4em] uppercase text-accent font-semibold">
               Pizza · Burgers · Tacos
             </p>
