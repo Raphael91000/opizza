@@ -41,7 +41,7 @@ const MENU: Record<Category, Section[]> = {
       subtitle: "Junior 8€ · Sénior 12€ · Méga 16€",
       items: [
         { name: "Marguerita", desc: "Sauce tomate, mozzarella", price: "8 / 12 / 16€" },
-        { name: "Reine", desc: "Sauce tomate, mozzarella, jambon, champignons", price: "9,50 / 17 / 23€" },
+        { name: "Reine", desc: "Sauce tomate, mozzarella, jambon, champignons", price: "8 / 12 / 16€" },
         { name: "4 Fromages", desc: "Sauce tomate, mozzarella, chèvre, bleu, brie, parmesan", price: "8 / 12 / 16€" },
         { name: "Paysanne", desc: "Sauce tomate, mozzarella, lardons, oeuf", price: "8 / 12 / 16€" },
         { name: "Campione", desc: "Sauce tomate, mozzarella, viande hachée, champignons", price: "8 / 12 / 16€" },
@@ -407,12 +407,12 @@ export default function Menu() {
 
           {/* Supplément info for pizzas */}
           {activeCategory === "Pizzas" && (
-            <p className="font-body text-white/30 text-xs border-t border-white/5 pt-4">
+            <p className="font-heading italic text-white text-lg mt-4">
               Ingrédient supplémentaire : 1€ (Junior) · 1,50€ (Sénior) · 2€ (Méga)
             </p>
           )}
           {(activeCategory === "Burgers" || activeCategory === "Sandwichs" || activeCategory === "Tacos") && (
-            <p className="font-body text-white/30 text-xs border-t border-white/5 pt-4">
+            <p className="font-heading italic text-white text-lg mt-4">
               Supplément charcuterie ou fromage : +1€
             </p>
           )}

@@ -14,23 +14,27 @@ const V1_END   = 500;
 const XFADE_S  = 480;
 const XFADE_E  = 560;
 const V2_START = 560;
-const V2_END   = 710;   // V2 ends = menu already in place (rose during V2)
-const FREEZE_END = 810; // 100vh freeze to read "Osez découvrir Notre Menu"
+const V2_END   = 710;
+const FREEZE_END = 810;
 // Hero total = 810vh
 
 function getFrame1Src(i: number) { return `/frames/frame_${String(i + 1).padStart(3, "0")}.jpg`; }
 function getFrame2Src(i: number) { return `/frames2/frame_${String(i + 1).padStart(3, "0")}.jpg`; }
 
 export default function Hero() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const phrase1Ref = useRef<HTMLDivElement>(null);
-  const phrase2Ref = useRef<HTMLDivElement>(null);
-  const word1Ref   = useRef<HTMLSpanElement>(null);
-  const word2Ref   = useRef<HTMLSpanElement>(null);
-  const word3Ref   = useRef<HTMLSpanElement>(null);
-  const ctaRef     = useRef<HTMLDivElement>(null);
-  const oseRef     = useRef<HTMLDivElement>(null);
+  const sectionRef    = useRef<HTMLDivElement>(null);
+  const canvasRef     = useRef<HTMLCanvasElement>(null);
+  const phrase1Ref    = useRef<HTMLDivElement>(null);
+  const phrase2Ref    = useRef<HTMLDivElement>(null);
+  const word1Ref      = useRef<HTMLSpanElement>(null);
+  const word2Ref      = useRef<HTMLSpanElement>(null);
+  const word3Ref      = useRef<HTMLSpanElement>(null);
+  const ctaRef        = useRef<HTMLDivElement>(null);
+  const oseRef        = useRef<HTMLDivElement>(null);
+  const labelRef      = useRef<HTMLParagraphElement>(null);
+  const promoRef      = useRef<HTMLDivElement>(null);
+  const livRef        = useRef<HTMLDivElement>(null);
+  const scrollHintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -72,7 +76,6 @@ export default function Hero() {
       ctx.globalAlpha = 1;
     }
 
-    // Force first render whether image is cached or not
     f1[0].onload = () => render();
     if (f1[0].complete && f1[0].naturalWidth > 0) render();
 
@@ -83,7 +86,6 @@ export default function Hero() {
     const twX = gsap.to(state, { xfade: 1, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(XFADE_S), end: at(XFADE_E), scrub: 1 }, onUpdate: render });
     const tw2 = gsap.to(state, { v2: FRAME_COUNT_2 - 1, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(V2_START), end: at(V2_END), scrub: 1 }, onUpdate: render });
 
-    // Ensure frame 0 renders once everything is set up
     requestAnimationFrame(render);
 
     // "Osez découvrir" appears after phrase2
@@ -93,37 +95,72 @@ export default function Hero() {
       scrollTrigger: { trigger: section, start: at(560), end: at(630), scrub: 1 },
     });
 
-    // Entrance
-    gsap.set([word1Ref.current, word2Ref.current, word3Ref.current, ctaRef.current], { autoAlpha: 0, y: 35 });
+    // Initial hidden states
+    gsap.set([word1Ref.current, word2Ref.current, word3Ref.current, ctaRef.current, labelRef.current, promoRef.current], { autoAlpha: 0, y: 35 });
     gsap.set(phrase2Ref.current, { autoAlpha: 0, y: 40 });
+    gsap.set(livRef.current, { autoAlpha: 0, y: 20 });
 
+    // Entrance
+    // Only run entrance animation if page loaded at top (not mid-scroll)
+    const scrolledPastPromo = window.scrollY > vh * 0.48;
     const enterTl = gsap.timeline({ delay: 0.3 });
     enterTl
-      .to(word1Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" })
+      .to(labelRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" })
+      .to(word1Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.2")
       .to(word2Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
       .to(word3Ref.current, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
-      .to(ctaRef.current,   { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.2")
+      .to(ctaRef.current,   { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.2");
+    if (!scrolledPastPromo) {
+      enterTl.to(promoRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.1");
+    }
 
-    const p1Exit  = gsap.fromTo(phrase1Ref.current, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48),  end: at(108), scrub: true } });
+    // Scroll hint: appear after entrance, disappear on first scroll
+    const twScrollHintIn = gsap.to(scrollHintRef.current, { autoAlpha: 1, duration: 0.8, delay: 2.0 });
+    const twScrollHintOut = gsap.fromTo(scrollHintRef.current,
+      { autoAlpha: 1 },
+      { autoAlpha: 0, immediateRender: false,
+        scrollTrigger: { trigger: section, start: "top top", end: at(8), scrub: true },
+      }
+    );
+
+    const p1Exit  = gsap.fromTo([phrase1Ref.current, labelRef.current], { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48),  end: at(108), scrub: true } });
+    const promoExit = gsap.fromTo(promoRef.current, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48), end: at(108), scrub: true } });
     const p2Enter = gsap.fromTo(phrase2Ref.current, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0,   ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(84),  end: at(156), scrub: true } });
-    const p2Exit  = gsap.fromTo([phrase2Ref.current, ctaRef.current], { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -30, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(540), end: at(630), scrub: true } });
+    const livEnter = gsap.fromTo(livRef.current, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(120), end: at(180), scrub: true } });
+    const p2Exit  = gsap.fromTo([phrase2Ref.current, ctaRef.current, livRef.current], { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -30, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(540), end: at(630), scrub: true } });
 
     const handleResize = () => { resize(); render(); };
     window.addEventListener("resize", handleResize);
     return () => {
-      [tw1, twX, tw2, twOse, p1Exit, p2Enter, p2Exit, enterTl].forEach(t => t?.kill());
+      [tw1, twX, tw2, twOse, p1Exit, promoExit, p2Enter, livEnter, p2Exit, enterTl, twScrollHintIn, twScrollHintOut].forEach(t => t?.kill());
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
-    // 1010vh: Hero stays sticky until MenuReveal is in place + 100vh freeze
     <section ref={sectionRef} id="hero-section" className="relative h-[810vh] z-20">
-      {/* No overflow-hidden — MenuReveal z-30 rises freely above */}
       <div className="sticky top-0 h-screen">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
-        <div className="absolute pt-36 px-10 md:px-20 left-0 right-0 top-0">
+        {/* Left vignette — anchors text area, separates it from canvas */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
+
+        {/* Dot pattern — left side decoration */}
+        <div className="hero-dots absolute inset-0 pointer-events-none opacity-30" />
+
+
+        <div className="absolute pt-20 px-10 md:px-20 left-0 right-0 top-0">
+          {/* Category label */}
+          <div
+            ref={labelRef}
+            className="inline-flex items-center gap-2 mb-5 opacity-0 invisible"
+          >
+            <span className="w-5 h-px bg-accent" />
+            <p className="font-body text-[11px] tracking-[0.4em] uppercase text-accent font-semibold">
+              Pizza · Burgers · Tacos
+            </p>
+          </div>
+
           <div className="relative h-[calc(3*clamp(3rem,7vw,6rem)*1.25)]">
             <div ref={phrase1Ref} className="absolute inset-0 pointer-events-none flex items-center">
               <p className="italic font-heading leading-none text-white/90">
@@ -133,34 +170,102 @@ export default function Hero() {
               </p>
             </div>
             <div ref={phrase2Ref} className="absolute inset-0 pointer-events-none opacity-0 invisible flex items-center">
-              <p className="italic font-heading leading-none text-white/90">
-                <span className="block text-[clamp(3rem,5.5vw,5rem)]">Directement</span>
-                <span className="block text-accent text-[clamp(3.9rem,7.15vw,6.5rem)]">livré</span>
-                <span className="block text-[clamp(3rem,8vw,7rem)]">chez toi.</span>
+              <div>
+                <p className="italic font-heading leading-none text-white/90">
+                  <span className="block text-[clamp(3rem,5.5vw,5rem)]">Directement</span>
+                  <span className="block text-accent text-[clamp(3.9rem,7.15vw,6.5rem)]">livré</span>
+                  <span className="block text-[clamp(3rem,8vw,7rem)]">chez toi.</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          {/* Livraison offerte badge — above CTA, phrase 2 */}
+          <div ref={livRef} className="mt-3 mb-3 opacity-0 invisible">
+            <div style={{ transform: "rotate(-2deg)", display: "inline-block", padding: "8px 20px", backgroundColor: "#F5C518" }}>
+              <p className="font-heading italic text-[clamp(0.9rem,1.8vw,1.4rem)] leading-none text-black whitespace-nowrap">
+                Livraison offerte dès 20€
               </p>
             </div>
           </div>
+
           <div ref={ctaRef} className="mt-4 flex flex-col gap-3 opacity-0 invisible">
             <a href="tel:+33983518714" className="inline-flex items-center gap-3 bg-accent text-black font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-fit rounded-full transition-all duration-300 hover:bg-yellow-300">
               <PhoneIcon /><span>Commander maintenant</span>
             </a>
-            <a href="#menu" className="inline-flex items-center gap-3 border border-white/20 text-white/70 font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-fit rounded-full transition-all duration-300 hover:border-white/50 hover:text-white">
+            <a href="#menu" className="inline-flex items-center gap-3 bg-white text-black font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-fit rounded-full transition-all duration-300 hover:bg-white/80">
               <span>Découvrir notre menu</span>
             </a>
           </div>
         </div>
 
-        {/* "Osez découvrir" — pinned, waits for "Notre Menu" */}
+
+
+        {/* Promo badge — over the pizza */}
+        <div
+          ref={promoRef}
+          className="absolute bottom-[17%] right-[16%] pointer-events-none opacity-0 invisible"
+          style={{ transform: "rotate(-5deg)" }}
+        >
+          <PromoBadge />
+        </div>
+
+        {/* "Osez découvrir" */}
         <div ref={oseRef} className="absolute top-[40vh] -translate-y-1/2 left-0 px-10 md:px-20 pointer-events-none opacity-0 invisible">
           <p className="italic font-heading text-[clamp(3rem,5.5vw,5rem)] leading-none text-white/90">
             Osez<br /><span className="text-accent text-[1.3em]">découvrir</span>
           </p>
         </div>
 
-        {/* Cover KlingAI watermark on frames */}
-        <div className="absolute bottom-0 right-0 w-40 h-14 bg-black pointer-events-none" />
+        {/* Scroll indicator */}
+        <div
+          ref={scrollHintRef}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-0 invisible pointer-events-none"
+        >
+          <div className="w-px h-14 bg-white/20 relative overflow-hidden">
+            <div className="scroll-line-anim absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-transparent to-white/70" />
+          </div>
+        </div>
+
+        {/* Black band bottom — covers watermark and anchors hero */}
+        <div className="absolute bottom-0 left-0 right-0 h-14 bg-black pointer-events-none" />
       </div>
     </section>
+  );
+}
+
+function LivBadge() {
+  const path = "M22,0 L418,0 L440,40 L418,80 L22,80 L0,40 Z";
+  return (
+    <div className="relative" style={{ width: 440, height: 80 }}>
+      <svg viewBox="0 0 440 80" width={440} height={80} style={{ display: "block", position: "absolute", top: 0, left: 0 }}>
+        <path d={path} fill="#F5C518" />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <p className="font-heading italic text-[clamp(1.3rem,2.4vw,2.2rem)] leading-none text-black whitespace-nowrap">
+          Livraison offerte dès 20€
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function PromoBadge() {
+  // 548 wide, 72 tall
+  // Left side 2 teeth pointing left (x=0), right side 2 teeth pointing right (x=548)
+  // Teeth at y = 18, 54  (dividing 72 into thirds roughly)
+  const path = "M22,0 L526,0 L548,36 L526,72 L22,72 L0,36 Z";
+
+  return (
+    <div className="relative" style={{ width: 548, height: 72 }}>
+      <svg viewBox="0 0 548 72" width={548} height={72} style={{ display: "block", position: "absolute", top: 0, left: 0 }}>
+        <path d={path} fill="#F5C518" />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <p className="font-heading italic text-[clamp(1.4rem,2.8vw,2.4rem)] leading-none text-black whitespace-nowrap">
+          1 pizza achetée = 1 pizza offerte
+        </p>
+      </div>
+    </div>
   );
 }
 

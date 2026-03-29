@@ -44,3 +44,25 @@ html {
   animation: navFadeIn 0.8s ease 0.2s both;
 }
 
+
+/* Hero dots — left side decoration */
+.hero-dots {
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.32) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,0.18) 1.5px, transparent 1.5px);
+  background-size: 22px 22px, 37px 37px;
+  background-position: 0 0, 11px 11px;
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 25%, transparent 55%);
+  mask-image: linear-gradient(to right, black 0%, black 25%, transparent 55%);
+}
+
+/* Scroll indicator traveling line */
+@keyframes scrollLine {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
+}
+
+.scroll-line-anim {
+  animation: scrollLine 1.8s ease-in-out infinite;
+}
+

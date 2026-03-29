@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" fill="white">
+  <!-- Roo icon simplified -->
+  <path d="M12 8 C12 5 14 3 17 3 C22 3 26 7 27 12 C28 16 27 20 25 23 C28 22 32 22 35 24 C38 26 39 30 38 34 C37 38 33 41 29 41 C26 41 24 39 23 37 C22 40 20 43 17 44 C14 45 11 43 10 40 C8 36 9 31 11 27 C9 24 8 20 8 16 C8 12 10 9 12 8 Z" fill="white"/>
+  <!-- Wordmark -->
+  <text x="46" y="35" font-family="Arial, sans-serif" font-weight="700" font-size="28" fill="white" letter-spacing="-0.5">deliveroo</text>
+</svg>
