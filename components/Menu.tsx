@@ -268,6 +268,8 @@ export default function Menu() {
   const [activePizzaSection, setActivePizzaSection] = useState(0);
   const titleRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   useEffect(() => {
     if (titleRef.current) {
@@ -285,7 +287,19 @@ export default function Menu() {
     }
   }, []);
 
+  const scrollTabIntoView = (cat: string) => {
+    const tab = tabRefs.current[cat];
+    const container = tabsScrollRef.current;
+    if (!tab || !container) return;
+    const tabLeft = tab.offsetLeft;
+    const tabWidth = tab.offsetWidth;
+    const containerWidth = container.offsetWidth;
+    const scrollTo = tabLeft - containerWidth / 2 + tabWidth / 2;
+    container.scrollTo({ left: scrollTo, behavior: "smooth" });
+  };
+
   const switchCategory = (cat: Category) => {
+    scrollTabIntoView(cat);
     if (!contentRef.current) return;
     gsap.to(contentRef.current, {
       opacity: 0, y: 10, duration: 0.18, ease: "power2.in",
@@ -330,12 +344,14 @@ export default function Menu() {
 
 
         {/* Category tabs */}
-        <div className="flex flex-wrap gap-2 mb-12 border-b border-white/8 pb-6">
+        <div className="relative mb-12 md:mb-12">
+          <div ref={tabsScrollRef} className="flex overflow-x-auto gap-2 border-b border-white/8 pb-6 scrollbar-none -mx-6 px-6 md:mx-0 md:px-0 md:flex-wrap">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
+              ref={(el) => { tabRefs.current[cat] = el; }}
               onClick={() => switchCategory(cat)}
-              className={`font-body text-xs tracking-[0.2em] uppercase px-4 py-2 border transition-all duration-200 ${
+              className={`font-body text-xs tracking-[0.2em] uppercase px-4 py-2 border transition-all duration-200 shrink-0 ${
                 activeCategory === cat
                   ? "border-accent text-black bg-accent"
                   : "border-white/15 text-white/50 hover:border-white/40 hover:text-white"
@@ -344,6 +360,7 @@ export default function Menu() {
               {cat}
             </button>
           ))}
+          </div>
         </div>
 
         {/* Content */}

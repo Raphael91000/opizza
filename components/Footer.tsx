@@ -23,7 +23,7 @@ export default function Footer() {
         </h2>
 
         {/* 3 info blocks */}
-        <div className="grid grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-3 gap-3 md:gap-6 mb-8">
           {[
             { label: "DÉLAI MOYEN",    value: "30 min" },
             { label: "COMMANDE MIN.",  value: "15€"    },
@@ -47,20 +47,20 @@ export default function Footer() {
         </p>
 
         {/* Platform logos */}
-        <div className="flex items-center justify-center gap-12">
+        <div className="flex items-center justify-center gap-6 md:gap-12 flex-wrap">
           <Image
             src="/uber.svg"
             alt="Uber Eats"
             width={280}
             height={60}
-            className="h-[60px] w-auto opacity-50 hover:opacity-80 transition-opacity duration-200"
+            className="h-10 md:h-[60px] w-auto opacity-50 hover:opacity-80 transition-opacity duration-200"
           />
           <Image
             src="/deli.png"
             alt="Deliveroo"
             width={300}
             height={60}
-            className="h-[60px] w-auto opacity-50 hover:opacity-80 transition-opacity duration-200"
+            className="h-10 md:h-[60px] w-auto opacity-50 hover:opacity-80 transition-opacity duration-200"
           />
         </div>
       </div>
@@ -72,7 +72,7 @@ export default function Footer() {
           className="inline-flex items-center gap-3 bg-accent text-black font-body font-bold tracking-[0.25em] uppercase text-sm px-10 py-5 rounded-full transition-all duration-300 hover:bg-yellow-300 hover:scale-105"
         >
           <PhoneIcon />
-          Commander maintenant
+          <span className="whitespace-nowrap">Commander maintenant</span>
         </a>
       </div>
 
@@ -80,11 +80,11 @@ export default function Footer() {
       <div className="w-full h-px bg-accent" />
 
       {/* 3 columns */}
-      <div className="max-w-[1200px] mx-auto px-6 md:px-10 py-16 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-12 items-start">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-10 py-12 md:py-16 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 items-start">
 
         {/* Logo */}
-        <div className="flex flex-col gap-4 md:items-end md:pr-32">
-          <Image src="/logo.png" alt="O'Pizza" width={160} height={70} className="w-36 h-auto" />
+        <div className="flex flex-col gap-4 items-center md:items-end md:pr-24">
+          <Image src="/logo.png" alt="O'Pizza" width={160} height={70} className="w-32 md:w-36 h-auto" />
         </div>
 
         {/* Address + phone */}
@@ -112,14 +112,20 @@ export default function Footer() {
         </div>
 
         {/* Hours */}
-        <div className="flex flex-col md:ml-auto">
+        <div className="flex flex-col items-center md:items-end w-full">
+          <div className="flex flex-col items-start">
           <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent mb-2">Horaires</p>
-          {hours.map(({ day, time, closed }) => (
-            <div key={day} className="flex items-center font-body text-xs mt-1.5">
-              <span className="w-20 shrink-0 text-white/45">{day}</span>
-              <span className={closed ? "text-white/45 italic" : "text-white/65 tabular-nums"}>{time}</span>
-            </div>
-          ))}
+          <table className="font-body text-xs border-separate border-spacing-y-1.5">
+            <tbody>
+              {hours.map(({ day, time, closed }) => (
+                <tr key={day}>
+                  <td className="text-white/45 pr-6 whitespace-nowrap">{day}</td>
+                  <td className={`whitespace-nowrap ${closed ? "text-white/45 italic" : "text-white/65 tabular-nums"}`}>{time}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          </div>
         </div>
       </div>
 

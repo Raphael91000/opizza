@@ -15,8 +15,8 @@ const XFADE_S  = 480;
 const XFADE_E  = 560;
 const V2_START = 560;
 const V2_END   = 710;
-const FREEZE_END = 810;
-// Hero total = 810vh
+const FREEZE_END = 950;
+// Hero total = 950vh
 
 function getFrame1Src(i: number) { return `/frames/frame_${String(i + 1).padStart(3, "0")}.jpg`; }
 function getFrame2Src(i: number) { return `/frames2/frame_${String(i + 1).padStart(3, "0")}.jpg`; }
@@ -33,6 +33,7 @@ export default function Hero() {
   const oseRef        = useRef<HTMLDivElement>(null);
   const labelRef      = useRef<HTMLParagraphElement>(null);
   const promoRef      = useRef<HTMLDivElement>(null);
+  const promoMobRef   = useRef<HTMLDivElement>(null);
   const livRef        = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
 
@@ -60,10 +61,13 @@ export default function Hero() {
 
     function drawImg(img: HTMLImageElement, alpha: number) {
       ctx!.globalAlpha = alpha;
-      const tw = canvas!.width * 0.62, th = canvas!.height;
-      const sc = Math.max(tw / img.naturalWidth, th / img.naturalHeight);
+      const isMobile = canvas!.width < 768;
+      const widthRatio = isMobile ? 0.85 : 0.62;
+      const xCenter = isMobile ? 0.5 : 0.67;
+      const tw = canvas!.width * widthRatio, th = canvas!.height;
+      const sc = Math.max(tw / img.naturalWidth, th / img.naturalHeight) * (isMobile ? 0.32 : 1);
       const dw = img.naturalWidth * sc, dh = img.naturalHeight * sc;
-      ctx!.drawImage(img, canvas!.width * 0.67 - dw / 2, (canvas!.height - dh) / 2, dw, dh);
+      ctx!.drawImage(img, canvas!.width * xCenter - dw / 2, (canvas!.height - dh) / 2, dw, dh);
     }
 
     function render() {
@@ -96,7 +100,7 @@ export default function Hero() {
     });
 
     // Initial hidden states
-    gsap.set([word1Ref.current, word2Ref.current, word3Ref.current, ctaRef.current, labelRef.current, promoRef.current], { autoAlpha: 0, y: 35 });
+    gsap.set([word1Ref.current, word2Ref.current, word3Ref.current, ctaRef.current, labelRef.current, promoRef.current, promoMobRef.current], { autoAlpha: 0, y: 35 });
     gsap.set(phrase2Ref.current, { autoAlpha: 0, y: 40 });
     gsap.set(livRef.current, { autoAlpha: 0, y: 20 });
 
@@ -112,6 +116,7 @@ export default function Hero() {
       .to(ctaRef.current,   { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.2");
     if (!scrolledPastPromo) {
       enterTl.to(promoRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.1");
+      enterTl.to(promoMobRef.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.5");
     }
 
     // Scroll hint: appear after entrance, disappear on first scroll
@@ -125,6 +130,7 @@ export default function Hero() {
 
     const p1Exit  = gsap.fromTo([phrase1Ref.current, labelRef.current], { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48),  end: at(108), scrub: true } });
     const promoExit = gsap.fromTo(promoRef.current, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48), end: at(108), scrub: true } });
+    const promoMobExit = gsap.fromTo(promoMobRef.current, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -50, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(48), end: at(108), scrub: true } });
     const p2Enter = gsap.fromTo(phrase2Ref.current, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0,   ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(84),  end: at(156), scrub: true } });
     const livEnter = gsap.fromTo(livRef.current, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(120), end: at(180), scrub: true } });
     const p2Exit  = gsap.fromTo([phrase2Ref.current, ctaRef.current, livRef.current], { autoAlpha: 1, y: 0 }, { autoAlpha: 0, y: -30, ease: "none", immediateRender: false, scrollTrigger: { trigger: section, start: at(540), end: at(630), scrub: true } });
@@ -132,13 +138,13 @@ export default function Hero() {
     const handleResize = () => { resize(); render(); };
     window.addEventListener("resize", handleResize);
     return () => {
-      [tw1, twX, tw2, twOse, p1Exit, promoExit, p2Enter, livEnter, p2Exit, enterTl, twScrollHintIn, twScrollHintOut].forEach(t => t?.kill());
+      [tw1, twX, tw2, twOse, p1Exit, promoExit, promoMobExit, p2Enter, livEnter, p2Exit, enterTl, twScrollHintIn, twScrollHintOut].forEach(t => t?.kill());
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
-    <section ref={sectionRef} id="hero-section" className="relative h-[810vh] z-20">
+    <section ref={sectionRef} id="hero-section" className="relative h-[950vh] z-20">
       <div className="sticky top-0 h-screen">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
@@ -149,11 +155,11 @@ export default function Hero() {
         <div className="hero-dots absolute inset-0 pointer-events-none opacity-30" />
 
 
-        <div className="absolute pt-20 px-10 md:px-20 left-0 right-0 top-0">
+        <div className="absolute pt-16 md:pt-20 px-5 md:px-20 left-0 right-0 top-0">
           {/* Category label */}
           <div
             ref={labelRef}
-            className="inline-flex items-center gap-2 mb-5 opacity-0 invisible"
+            className="flex justify-center md:justify-start items-center gap-2 mb-5 opacity-0 invisible"
           >
             <p className="font-body text-[11px] tracking-[0.4em] uppercase text-accent font-semibold">
               Pizza · Burgers · Tacos
@@ -180,18 +186,18 @@ export default function Hero() {
           </div>
           {/* Livraison offerte badge — above CTA, phrase 2 */}
           <div ref={livRef} className="mt-3 mb-3 opacity-0 invisible">
-            <div style={{ transform: "rotate(-2deg)", display: "inline-block", padding: "8px 20px", backgroundColor: "#F5C518" }}>
-              <p className="font-heading italic text-[clamp(0.9rem,1.8vw,1.4rem)] leading-none text-black whitespace-nowrap">
+            <div style={{ transform: "rotate(-2deg)", display: "inline-block", padding: "8px 16px", backgroundColor: "#F5C518" }}>
+              <p className="font-heading italic text-base md:text-[clamp(0.9rem,1.8vw,1.4rem)] leading-none text-black whitespace-nowrap">
                 Livraison offerte dès 20€
               </p>
             </div>
           </div>
 
-          <div ref={ctaRef} className="mt-4 flex flex-col gap-3 opacity-0 invisible">
-            <a href="tel:+33983518714" className="inline-flex items-center gap-3 bg-accent text-black font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-fit rounded-full transition-all duration-300 hover:bg-yellow-300">
+          <div ref={ctaRef} className="mt-4 md:mt-4 flex flex-col gap-3 opacity-0 invisible md:relative fixed bottom-16 left-5 right-5 md:bottom-auto md:left-auto md:right-auto z-40 md:z-auto">
+            <a href="tel:+33983518714" className="inline-flex items-center justify-center gap-3 bg-accent text-black font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-full md:w-fit rounded-full transition-all duration-300 hover:bg-yellow-300">
               <PhoneIcon /><span>Commander maintenant</span>
             </a>
-            <a href="#menu" className="inline-flex items-center gap-3 bg-white text-black font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-fit rounded-full transition-all duration-300 hover:bg-white/80">
+            <a href="#menu" className="inline-flex items-center justify-center gap-3 bg-white text-black font-body font-semibold tracking-[0.2em] uppercase text-xs px-7 py-4 w-full md:w-fit rounded-full transition-all duration-300 hover:bg-white/80">
               <span>Découvrir notre menu</span>
             </a>
           </div>
@@ -199,14 +205,29 @@ export default function Hero() {
 
 
 
-        {/* Promo badge — over the pizza */}
+        {/* Promo badge — desktop over pizza */}
         <div
           ref={promoRef}
-          className="absolute bottom-[17%] right-[16%] pointer-events-none opacity-0 invisible"
+          className="hidden md:block absolute bottom-[17%] right-[16%] pointer-events-none opacity-0 invisible"
           style={{ transform: "rotate(-5deg)" }}
         >
           <PromoBadge />
         </div>
+
+        {/* Promo badge — mobile */}
+        <div
+          ref={promoMobRef}
+          className="md:hidden absolute bottom-[38%] left-5 right-5 pointer-events-none opacity-0 invisible flex justify-center z-10"
+        >
+          <div style={{ padding: "8px 16px", backgroundColor: "#F5C518", transform: "rotate(-2deg)" }}>
+            <p className="font-heading italic text-base leading-none text-black whitespace-nowrap">
+              1 pizza achetée = 1 pizza offerte
+            </p>
+          </div>
+        </div>
+
+        {/* Black band — mobile, covers kling.ai watermark, full width below promo badge */}
+        <div className="md:hidden absolute bottom-0 left-0 right-0 bg-black pointer-events-none" style={{ top: "63%" }} />
 
         {/* "Osez découvrir" */}
         <div ref={oseRef} className="absolute top-[40vh] -translate-y-1/2 left-0 px-10 md:px-20 pointer-events-none opacity-0 invisible">

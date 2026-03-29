@@ -19,30 +19,39 @@ export default function MenuReveal() {
 
     const vh = window.innerHeight;
     const rootEm = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    // "Osez découvrir" center = 40vh, font clamp(3.75rem, 8vw, 6.5rem)
-    const fontPx = Math.min(Math.max(rootEm * 3.75, window.innerWidth * 0.08), rootEm * 6.5);
-    // "Osez découvrir": top-[40vh] -translate-y-1/2, font 2 lines leading-none
-    // Block top = 40vh - fontPx, block bottom = 40vh + fontPx
-    // Subtract Menu's pt-6 (1.5rem) so "Notre Menu" h2 lands right at oseBottom
-    const oseBottom = vh * 0.4 + fontPx - rootEm * 1.5;
+    // Hero "Osez découvrir": top-[40vh] -translate-y-1/2, font clamp(3rem,5.5vw,5rem), 2 lines leading-none
+    // Total text height = fontPx*2.3 → half = fontPx*1.15
+    // Bottom of text (in viewport) = vh*0.4 + fontPx*1.15
+    const fontPx = Math.min(Math.max(rootEm * 3, window.innerWidth * 0.055), rootEm * 5);
 
-    // Rise from bottom of viewport to just below "Osez découvrir"
-    // Exactly in sync with the frozen period: 710vh → 910vh
-    const tween = gsap.fromTo(wrapper,
-      { y: vh },
-      {
-        y: oseBottom,
-        ease: "none",
-        scrollTrigger: {
-          trigger: hero,
-          start: () => `top+=${vh * 560 / 100} top`,  // 560vh — V2 starts
-          end:   () => `top+=${vh * 710 / 100} top`,  // 710vh — V2 ends = menu in place
-          scrub: 1,
-        },
-      }
-    );
+    // Hero: h-[950vh] → wrapper doc pos = (950-100)*vh/100 = 850*vh/100
+    // Phase 1 ends at at(800): wrapper viewport pos = (850-800)*vh/100 = vh/2
+    // For "Notre Menu" h2 to land at "Osez découvrir" bottom:
+    //   rendered = wrapper_pos + y = vh/2 + y = vh*0.4 + fontPx*1.15 - rootEm*1.5
+    //   → y = fontPx*1.15 - vh*0.1 - rootEm*1.5
+    const oseBottom = fontPx * 1.15 - vh * 0.1 - rootEm * 1.5;
 
-    return () => { tween.kill(); };
+    // Phase 2 (frozen): wrapper moves up by vh/2 (from at(800) to at(850))
+    // Compensate with +vh/2 on y so menu stays at same screen position
+    const oseFrozen = oseBottom + vh * 0.5;
+
+    // Single timeline: phase1 = menu rises (630→800vh), phase2 = frozen (800→850vh)
+    const total = 850 - 630; // 220vh
+    const p1 = (800 - 630) / total; // 170/220
+    const p2 = (850 - 800) / total; //  50/220
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: () => `top+=${vh * 630 / 100} top`,
+        end:   () => `top+=${vh * 850 / 100} top`,
+        scrub: true,
+      },
+    });
+    tl.fromTo(wrapper, { y: vh },       { y: oseBottom, ease: "none", duration: p1 })
+      .fromTo(wrapper, { y: oseBottom }, { y: oseFrozen, ease: "none", duration: p2 });
+
+    return () => { tl.kill(); };
   }, []);
 
   return (
