@@ -17,7 +17,7 @@ export default function MenuReveal() {
     const hero = document.getElementById("hero-section");
     if (!wrapper || !hero) return;
 
-    const vh = window.innerHeight;
+    const vh = window.visualViewport?.height ?? window.innerHeight;
     const rootEm = parseFloat(getComputedStyle(document.documentElement).fontSize);
     // Hero "Osez découvrir": top-[40vh] -translate-y-1/2, font clamp(3rem,5.5vw,5rem), 2 lines leading-none
     // Total text height = fontPx*2.3 → half = fontPx*1.15

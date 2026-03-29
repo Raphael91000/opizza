@@ -151,7 +151,7 @@ export default function Hero() {
 
   return (
     <section ref={sectionRef} id="hero-section" className="relative h-[950vh] z-20">
-      <div className="sticky top-0 h-screen">
+      <div className="sticky top-0 h-screen" style={{ overflowX: "clip" }}>
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
         {/* Left vignette — anchors text area, separates it from canvas */}
