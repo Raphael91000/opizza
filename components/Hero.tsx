@@ -38,6 +38,7 @@ export default function Hero() {
   const scrollHintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.innerWidth < 768) return;
     const section = sectionRef.current;
     const canvas  = canvasRef.current;
     if (!section || !canvas) return;
@@ -150,7 +151,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="hero-section" className="relative h-[950vh] z-20">
+    <section ref={sectionRef} id="hero-section" className="hidden md:block relative h-[950vh] z-20">
       <div className="sticky top-0 h-screen" style={{ overflowX: "clip" }}>
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 

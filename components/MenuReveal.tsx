@@ -14,20 +14,48 @@ export default function MenuReveal() {
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
-    const hero = document.getElementById("hero-section");
-    if (!wrapper || !hero) return;
+    if (!wrapper) return;
 
-    const vh = window.visualViewport?.height ?? window.innerHeight;
+    const isMobile = window.innerWidth < 768;
     const rootEm = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    // Hero "Osez découvrir": top-[40vh] -translate-y-1/2, font clamp(3rem,5.5vw,5rem), 2 lines leading-none
+    // "Osez découvrir": top-[40vh] -translate-y-1/2, font clamp(3rem,5.5vw,5rem), 2 lines leading-none
     // Total text height = fontPx*2.3 → half = fontPx*1.15
-    // Bottom of text (in viewport) = vh*0.4 + fontPx*1.15
     const fontPx = Math.min(Math.max(rootEm * 3, window.innerWidth * 0.055), rootEm * 5);
 
+    if (isMobile) {
+      const mobileTrigger = document.getElementById("osez-mobile-trigger");
+      if (!mobileTrigger) return;
+
+      const mvh = window.visualViewport?.height ?? window.innerHeight;
+      const oseBottomM = mvh * 0.4 + fontPx * 1.15 - rootEm * 1.5;
+
+      // Compute actual document positions to avoid CSS vh ≠ JS vh mismatch (iOS Safari)
+      const wrapperDocTop  = wrapper.getBoundingClientRect().top  + window.scrollY;
+      const triggerDocTop  = mobileTrigger.getBoundingClientRect().top + window.scrollY;
+      // When scrollTop = wrapperDocTop, wrapper is at viewport top (y=0 → "Notre Menu" docked)
+      const endPx   = wrapperDocTop - triggerDocTop;
+      const startPx = endPx - mvh * 0.3;  // start rising late = arrives fast
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: mobileTrigger,
+          start: () => `top+=${startPx} top`,
+          end:   () => `top+=${endPx} top`,
+          scrub: true,
+        },
+      });
+      tl.fromTo(wrapper, { y: mvh }, { y: oseBottomM, ease: "none" });
+
+      return () => { tl.kill(); };
+    }
+
+    // Desktop: trigger is #hero-section (h-[950vh])
+    const hero = document.getElementById("hero-section");
+    if (!hero) return;
+
+    const vh = window.visualViewport?.height ?? window.innerHeight;
     // Hero: h-[950vh] → wrapper doc pos = (950-100)*vh/100 = 850*vh/100
-    // Animation ends at at(850) = exactly when sticky releases → no frozen stop
-    // At at(850): wrapper viewport pos = 0, so oseBottom = target rendered pos
-    // "Notre Menu" h2 at "Osez découvrir" bottom = vh*0.4 + fontPx*1.15 - pt6
+    // Animation ends at at(850) = when wrapper viewport pos = 0
     const oseBottom = vh * 0.4 + fontPx * 1.15 - rootEm * 1.5;
 
     const tl = gsap.timeline({
