@@ -1,11 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 function PhoneIcon() {
   return (
@@ -16,39 +11,10 @@ function PhoneIcon() {
 }
 
 export default function HeroMobile() {
-  const triggerRef = useRef<HTMLElement>(null);
-  const phrase1Ref = useRef<HTMLDivElement>(null);
-  const phrase2Ref = useRef<HTMLDivElement>(null);
-  const livRef     = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const section = triggerRef.current;
-    if (!section) return;
-
-    const mvh = window.visualViewport?.height ?? window.innerHeight;
-
-    gsap.set(phrase1Ref.current, { autoAlpha: 1, y: 0 });
-    gsap.set(phrase2Ref.current, { autoAlpha: 0, y: 30 });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: () => `top+=${mvh * 1} top`,  // 100vh in
-        end:   () => `top+=${mvh * 2} top`,  // 200vh in
-        scrub: true,
-      },
-    });
-    tl.to(phrase1Ref.current, { autoAlpha: 0, y: -30, ease: "none", immediateRender: false }, 0)
-      .to(livRef.current,     { autoAlpha: 0, ease: "none", immediateRender: false }, 0)
-      .fromTo(phrase2Ref.current, { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, ease: "none" }, 0);
-
-    return () => { tl.kill(); };
-  }, []);
-
   return (
     <div className="md:hidden">
 
-      {/* ── Section 1 : Chaude généreuse fondante ── */}
+      {/* ── Section 1 : Hero ── */}
       <section className="relative h-screen bg-black overflow-hidden flex flex-col">
         <div className="absolute inset-0">
           <Image
@@ -74,10 +40,13 @@ export default function HeroMobile() {
           </div>
         </div>
 
-        <div className="relative z-10 flex flex-col h-full px-5 pt-24 pb-20">
-          <p className="font-body text-[11px] tracking-[0.4em] uppercase text-accent font-semibold text-center mb-5">
+        <div className="absolute top-16 left-0 right-0 flex justify-center z-10">
+          <p className="font-body text-[11px] tracking-[0.4em] uppercase text-accent font-semibold text-center">
             Pizza · Burgers · Tacos
           </p>
+        </div>
+
+        <div className="relative z-10 flex flex-col h-full px-5 pt-40 pb-20">
           <p className="italic font-heading leading-none text-white/90">
             <span className="block text-[clamp(3rem,5.5vw,5rem)]">Chaude</span>
             <span className="block text-accent text-[clamp(3.9rem,7.15vw,6.5rem)]">généreuse</span>
@@ -102,45 +71,6 @@ export default function HeroMobile() {
         </div>
       </section>
 
-      {/* ── Section 2 : Directement livré → Osez découvrir (trigger MenuReveal) ── */}
-      {/* h-[500vh]: 0-100vh stable, 100-200vh crossfade, 200-500vh osez+menu rise */}
-      <section ref={triggerRef} id="osez-mobile-trigger" className="relative h-[500vh]">
-        <div className="sticky top-0 h-screen bg-black overflow-hidden">
-          <div className="absolute inset-0">
-            <Image
-              src="/frames/frame_145.jpg"
-              fill
-              alt=""
-              className="object-contain"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
-          </div>
-
-          <div className="hero-dots absolute inset-0 pointer-events-none opacity-30" />
-          <div className="absolute top-[62%] bottom-0 left-0 right-0 bg-black z-[5]" />
-
-          {/* Phrase 1 : Directement livré chez toi */}
-          <div ref={phrase1Ref} className="absolute top-0 left-0 px-5 pt-24 z-10">
-            <p className="italic font-heading leading-none text-white/90">
-              <span className="block text-[clamp(3rem,5.5vw,5rem)]">Directement</span>
-              <span className="block text-accent text-[clamp(3.9rem,7.15vw,6.5rem)]">livré</span>
-              <span className="block text-[clamp(3rem,8vw,7rem)]">chez toi.</span>
-            </p>
-            <div ref={livRef} className="mt-4" style={{ transform: "rotate(-2deg)", display: "inline-block", padding: "8px 16px", backgroundColor: "#F5C518" }}>
-              <p className="font-heading italic text-base leading-none text-black whitespace-nowrap">
-                Livraison offerte dès 20€
-              </p>
-            </div>
-          </div>
-
-          {/* Phrase 2 : Osez découvrir */}
-          <div ref={phrase2Ref} className="absolute top-[40vh] -translate-y-1/2 left-0 px-5 z-10">
-            <p className="italic font-heading text-[clamp(3rem,5.5vw,5rem)] leading-none text-white/90">
-              Osez<br /><span className="text-accent text-[1.3em]">découvrir</span>
-            </p>
-          </div>
-        </div>
-      </section>
 
     </div>
   );

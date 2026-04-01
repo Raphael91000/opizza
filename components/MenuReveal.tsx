@@ -23,30 +23,8 @@ export default function MenuReveal() {
     const fontPx = Math.min(Math.max(rootEm * 3, window.innerWidth * 0.055), rootEm * 5);
 
     if (isMobile) {
-      const mobileTrigger = document.getElementById("osez-mobile-trigger");
-      if (!mobileTrigger) return;
-
-      const mvh = window.visualViewport?.height ?? window.innerHeight;
-      const oseBottomM = mvh * 0.4 + fontPx * 1.15 - rootEm * 1.5;
-
-      // Compute actual document positions to avoid CSS vh ≠ JS vh mismatch (iOS Safari)
-      const wrapperDocTop  = wrapper.getBoundingClientRect().top  + window.scrollY;
-      const triggerDocTop  = mobileTrigger.getBoundingClientRect().top + window.scrollY;
-      // When scrollTop = wrapperDocTop, wrapper is at viewport top (y=0 → "Notre Menu" docked)
-      const endPx   = wrapperDocTop - triggerDocTop;
-      const startPx = endPx - mvh * 0.3;  // start rising late = arrives fast
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: mobileTrigger,
-          start: () => `top+=${startPx} top`,
-          end:   () => `top+=${endPx} top`,
-          scrub: true,
-        },
-      });
-      tl.fromTo(wrapper, { y: mvh }, { y: oseBottomM, ease: "none" });
-
-      return () => { tl.kill(); };
+      gsap.set(wrapper, { y: 0 });
+      return;
     }
 
     // Desktop: trigger is #hero-section (h-[950vh])
@@ -74,7 +52,12 @@ export default function MenuReveal() {
   return (
     // z-30 above Hero canvas (z-20), -mt-[100vh] to overlap
     // bg-black on inner content so pizza doesn't bleed through text
-    <div ref={wrapperRef} className="relative z-30 -mt-[100vh]">
+    <div ref={wrapperRef} className="relative z-30 md:-mt-[100vh]">
+      <div className="md:hidden bg-black px-5 pt-20 pb-0">
+        <p className="italic font-heading text-[clamp(3rem,5.5vw,5rem)] leading-none text-white/90">
+          Osez<br /><span className="text-accent text-[1.3em]">découvrir</span>
+        </p>
+      </div>
       <Menu />
 
       {/* Torn edge: yellow bleeding into black Menu above */}

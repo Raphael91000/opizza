@@ -41,25 +41,25 @@ const MENU: Record<Category, Section[]> = {
       subtitle: "Junior 8€ · Sénior 12€ · Méga 16€",
       items: [
         { name: "Marguerita", desc: "Sauce tomate, mozzarella", price: "8 / 12 / 16€" },
-        { name: "Reine", desc: "Sauce tomate, mozzarella, jambon, champignons", price: "8 / 12 / 16€" },
-        { name: "4 Fromages", desc: "Sauce tomate, mozzarella, chèvre, bleu, brie, parmesan", price: "8 / 12 / 16€" },
-        { name: "Paysanne", desc: "Sauce tomate, mozzarella, lardons, oeuf", price: "8 / 12 / 16€" },
-        { name: "Campione", desc: "Sauce tomate, mozzarella, viande hachée, champignons", price: "8 / 12 / 16€" },
-        { name: "Calzone", desc: "Sauce tomate, mozzarella, oeuf, jambon ou viande hachée", price: "8 / 12 / 16€" },
-        { name: "Napolitaine", desc: "Sauce tomate, mozzarella, anchois, câpres, olives", price: "8 / 12 / 16€" },
-        { name: "Mexicaine", desc: "Sauce tomate, mozzarella, viande hachée, chorizo, poivrons", price: "8 / 12 / 16€" },
-        { name: "Neptune", desc: "Sauce tomate, mozzarella, thon, poivrons, tomates fraîches, olives", price: "8 / 12 / 16€" },
-        { name: "Orientale", desc: "Sauce tomate, mozzarella, merguez, poivrons, oeuf, olives", price: "8 / 12 / 16€" },
-        { name: "Del Grec", desc: "Sauce tomate, mozzarella, viande grec, tomates fraîches, oignons", price: "8 / 12 / 16€" },
-        { name: "3 Jambons", desc: "Sauce tomate, mozzarella, jambon, lardons, chorizo", price: "8 / 12 / 16€" },
-        { name: "Fajitas", desc: "Sauce tomate, mozzarella, poulet, poivrons, oignons", price: "8 / 12 / 16€" },
-        { name: "Bolognaise", desc: "Sauce tomate, mozzarella, viande hachée, pommes de terre, oignons", price: "8 / 12 / 16€" },
-        { name: "Boursin", desc: "Sauce tomate, mozzarella, viande hachée, boursin", price: "8 / 12 / 16€" },
-        { name: "Végétarienne", desc: "Sauce tomate, mozzarella, champignons, poivrons, artichauts, tomates fraîches, olives", price: "8 / 12 / 16€" },
-        { name: "Portugaise", desc: "Sauce tomate, mozzarella, merguez, chorizo, oeuf", price: "8 / 12 / 16€" },
-        { name: "4 Saisons", desc: "Sauce tomate, mozzarella, jambon, champignons, poivrons, artichauts, olives", price: "8 / 12 / 16€" },
-        { name: "Américaine", desc: "Sauce tomate, mozzarella, viande hachée, bacon, oignons, oeuf", price: "8 / 12 / 16€" },
-        { name: "Royale", desc: "Sauce tomate, mozzarella, merguez, viande hachée, poulet", price: "8 / 12 / 16€" },
+        { name: "Reine", desc: "Sauce tomate, mozzarella, jambon, champignons", price: "9 / 14 / 19€" },
+        { name: "4 Fromages", desc: "Sauce tomate, mozzarella, chèvre, bleu, brie, parmesan", price: "9 / 14 / 19€" },
+        { name: "Paysanne", desc: "Sauce tomate, mozzarella, lardons, oeuf", price: "9 / 14 / 19€" },
+        { name: "Campione", desc: "Sauce tomate, mozzarella, viande hachée, champignons", price: "9 / 14 / 19€" },
+        { name: "Calzone", desc: "Sauce tomate, mozzarella, oeuf, jambon ou viande hachée", price: "9 / 14 / 19€" },
+        { name: "Napolitaine", desc: "Sauce tomate, mozzarella, anchois, câpres, olives", price: "9 / 14 / 19€" },
+        { name: "Mexicaine", desc: "Sauce tomate, mozzarella, viande hachée, chorizo, poivrons", price: "9 / 14 / 19€" },
+        { name: "Neptune", desc: "Sauce tomate, mozzarella, thon, poivrons, tomates fraîches, olives", price: "9 / 14 / 19€" },
+        { name: "Orientale", desc: "Sauce tomate, mozzarella, merguez, poivrons, oeuf, olives", price: "9 / 14 / 19€" },
+        { name: "Del Grec", desc: "Sauce tomate, mozzarella, viande grec, tomates fraîches, oignons", price: "9 / 14 / 19€" },
+        { name: "3 Jambons", desc: "Sauce tomate, mozzarella, jambon, lardons, chorizo", price: "9 / 14 / 19€" },
+        { name: "Fajitas", desc: "Sauce tomate, mozzarella, poulet, poivrons, oignons", price: "9 / 14 / 19€" },
+        { name: "Bolognaise", desc: "Sauce tomate, mozzarella, viande hachée, pommes de terre, oignons", price: "9 / 14 / 19€" },
+        { name: "Boursin", desc: "Sauce tomate, mozzarella, viande hachée, boursin", price: "9 / 14 / 19€" },
+        { name: "Végétarienne", desc: "Sauce tomate, mozzarella, champignons, poivrons, artichauts, tomates fraîches, olives", price: "9 / 14 / 19€" },
+        { name: "Portugaise", desc: "Sauce tomate, mozzarella, merguez, chorizo, oeuf", price: "9 / 14 / 19€" },
+        { name: "4 Saisons", desc: "Sauce tomate, mozzarella, jambon, champignons, poivrons, artichauts, olives", price: "9 / 14 / 19€" },
+        { name: "Américaine", desc: "Sauce tomate, mozzarella, viande hachée, bacon, oignons, oeuf", price: "9 / 14 / 19€" },
+        { name: "Royale", desc: "Sauce tomate, mozzarella, merguez, viande hachée, poulet", price: "9 / 14 / 19€" },
       ],
     },
     {
@@ -327,24 +327,24 @@ export default function Menu() {
     : MENU[activeCategory];
 
   return (
-    <section id="menu" className="pt-6 relative">
+    <section id="menu" className="pt-0 md:pt-6 relative">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
 
         {/* Header */}
-        <div ref={titleRef} className="mb-12">
+        <div ref={titleRef} className="mb-6 md:mb-12">
           <h2 className="italic font-heading text-[clamp(3rem,8vw,7rem)] leading-none text-white">Notre Menu</h2>
-          <div className="mt-4 w-16 h-px bg-accent" />
+          <div className="mt-3 w-16 h-px bg-accent" />
         </div>
 
       </div>
 
         {/* Black band starting from tabs — full screen width */}
-        <div className="w-full bg-black pt-8 pb-24 md:pb-36 px-6 md:px-10">
+        <div className="w-full bg-black pt-5 md:pt-8 pb-24 md:pb-36 px-6 md:px-10">
         <div className="max-w-7xl mx-auto">
 
 
         {/* Category tabs */}
-        <div className="relative mb-12 md:mb-12">
+        <div className="relative mb-6 md:mb-12">
           <div ref={tabsScrollRef} className="flex overflow-x-auto gap-2 border-b border-white/8 pb-6 scrollbar-none -mx-6 px-6 md:mx-0 md:px-0 md:flex-wrap">
           {CATEGORIES.map((cat) => (
             <button
